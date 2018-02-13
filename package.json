@@ -1,0 +1,26 @@
+{
+  "name": "surge-github-autorelease",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "bin": {
+    "surge-github-autorelease": "main.js"
+  },
+  "scripts": {
+    "build": ":",
+    "test": ":",
+    "release": "wnpm-release"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wnpm-ci": "latest"
+  },
+  "dependencies": {
+    "commander": "^2.14.1",
+    "surge": "^0.19.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
