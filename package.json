@@ -9,7 +9,8 @@
   "scripts": {
     "build": ":",
     "test": ":",
-    "release": "wnpm-release"
+    "release": "wnpm-release",
+    "postpublish": "rm -f npm-shrinkwrap.json"
   },
   "author": "",
   "license": "ISC",
