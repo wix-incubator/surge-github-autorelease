@@ -2,7 +2,7 @@
   "name": "surge-github-autorelease",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "sg-auto-release.js",
   "bin": {
     "surge-github-autorelease": "main.js"
   },
@@ -12,8 +12,6 @@
     "release": "wnpm-release",
     "postpublish": "rm -f npm-shrinkwrap.json"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "wnpm-ci": "latest"
   },
