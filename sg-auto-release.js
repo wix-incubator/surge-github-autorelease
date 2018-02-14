@@ -10,7 +10,7 @@ function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath}) {
 
 function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   const deployPath = `${rootPath}/${sourceDirectory}`;
-  const surgeProcess = spawn('node', ['surge', '--project', deployPath, '--domain', deployDomain]);
+  const surgeProcess = spawn('node', [`${process.cwd()}/node_modules/.bin/surge`, '--project', deployPath, '--domain', deployDomain]);
 
   surgeProcess.stdout.on('data', data => {
     process.stdout.write(data);
