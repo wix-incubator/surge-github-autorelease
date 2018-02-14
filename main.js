@@ -15,7 +15,6 @@ program
 
 const {repo, sourceDirectory, pr, githubToken, rootPath} = program;
 if (repo && sourceDirectory && pr && githubToken && rootPath) {
-  console.log('############# ROOT PATH', rootPath);
   sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath});
 } else {
   console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -b /home/travis/build -p 1455 -t ya65s2sjhd');
