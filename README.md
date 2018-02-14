@@ -6,9 +6,10 @@ All you have to do is run `npx surge-github-autorelease` with the appropriate ar
 
 #### `Arguments`
 
-| Argument name            | Description                             |
-| ------------------------ | ---------------------------------------- |
-| -r                     | Owner Name/Repo Name example: wix/wix-style-react |
-| -s                     | static files directory                          |
-| -p                     | Pull request number                          |
-| -t                     | Github authentication token                          |
+| Argument name            | Description                             | Example            |
+| ------------------------ | ---------------------------------------- |------------------ |
+| -r                     | Owner Name/Repo Name  |wix/wix-style-react|
+| -b                     | Root path to build agent root directory| /home/travis/build/wix/wix-style-react |
+| -s                     | static files directory                          | storybook-dist|
+| -p                     | Pull request number                          |1455|
+| -t                     | Github authentication token                          |ad2jhdjhShi10axK0NENEK0bcnshd|
