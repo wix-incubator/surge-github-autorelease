@@ -2,7 +2,6 @@ const {spawn} = require('child_process');
 const https = require('https');
 
 function sgAutorelease({repo, sourceDirectory, pr, githubToken}) {
-  console.log(repo);
   const [repoOwner, repoName] = (repo.split('/'));
   const deployDomain = `https://${repoOwner}-${repoName}-pr-${pr}.surge.sh`;
   surgeDeploy({repo, sourceDirectory, deployDomain, repoOwner, repoName});
@@ -14,7 +13,7 @@ function surgeDeploy({sourceDirectory, deployDomain, repoOwner, repoName}) {
   const surgeProcess = spawn('node', [`${process.cwd()}/node_modules/.bin/surge`, '--project', deployPath, '--domain', deployDomain]);
 
   surgeProcess.stdout.on('data', data => {
-    process.stdout.write(d);
+    process.stdout.write(data);
   });
   surgeProcess.on('error', e => {
     console.log('Error on surge process', e);
