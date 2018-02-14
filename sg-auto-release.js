@@ -12,16 +12,12 @@ function sgAutorelease({repo, sourceDirectory, pr, githubToken}) {
 function surgeDeploy({sourceDirectory, deployDomain, repoOwner, repoName}) {
   const deployPath = `/home/travis/build/${repoOwner}/${repoName}/${sourceDirectory}`;
   const surgeProcess = spawn('node', [`${process.cwd()}/node_modules/.bin/surge`, '--project', deployPath, '--domain', deployDomain]);
-  let surgeResults = '';
 
   surgeProcess.stdout.on('data', data => {
-    surgeResults += data;
+    process.stdout.write(d);
   });
   surgeProcess.on('error', e => {
     console.log('Error on surge process', e);
-  });
-  surgeProcess.on('close', () => {
-    console.log(surgeResults);
   });
 }
 
@@ -31,7 +27,6 @@ function gitAddComment({repo, pr, deployDomain, githubToken}) {
   const options = {
     hostname: 'api.github.com',
     path: githubCommentsPath,
-    port: 443,
     method: 'POST',
     headers: {
       'Authorization': `token ${githubToken}`,
@@ -40,15 +35,14 @@ function gitAddComment({repo, pr, deployDomain, githubToken}) {
   };
 
   const req = https.request(options, res => {
-    res.on('data', d => {
-      process.stdout.write(d);
-    });
+    if (res.statusCode === 200) {
+      console.log('Commented to github successfully');
+    }
   });
   req.on('error', e => {
     console.log('Error while posting the comment', e);
   });
-  req.write(JSON.stringify(githubCommentsData));
-  req.end();
+  req.end(JSON.stringify(githubCommentsData));
 }
 
 module.exports = sgAutorelease;
