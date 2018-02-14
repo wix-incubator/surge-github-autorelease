@@ -8,14 +8,15 @@ program
   .version(packageJson.version)
   .option('-r, --repo [type]', 'Owner Name/Repo Name example: wix/wix-style-react')
   .option('-s, --source-directory [type]', 'static files directory')
+  .option('-b, --root-path [type]', 'Root path to build agent root directory')
   .option('-p, --pr [type]', 'Pull request number')
   .option('-t, --github-token [type]', 'Github authentication token')
   .parse(process.argv);
 
-const {repo, sourceDirectory, pr, githubToken} = program;
-if (repo && sourceDirectory && pr && githubToken) {
-  sgAutorelease({repo, sourceDirectory, pr, githubToken});
+const {repo, sourceDirectory, pr, githubToken, rootPath} = program;
+if (repo && sourceDirectory && pr && githubToken && rootPath) {
+  sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath});
 } else {
-  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -p 1455 -t ya65s2sjhd');
+  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -p 1455 -t ya65s2sjhd -b /home/travis/build');
   console.log('One of the variable is missing, please try again');
 }
