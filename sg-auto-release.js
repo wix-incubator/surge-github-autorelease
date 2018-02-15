@@ -10,17 +10,23 @@ function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath}) {
 
 function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   const deployPath = `${rootPath}/${sourceDirectory}`;
+  console.log(`Deploying to Surge from: ${deployPath}...`);
   const surgeProcess = spawn('node', [`${process.cwd()}/node_modules/.bin/surge`, '--project', deployPath, '--domain', deployDomain]);
-  let surgeResults = '';
 
   surgeProcess.stdout.on('data', data => {
-    surgeResults += data;
+    console.log(data);
   });
+
+  surgeProcess.stderr.on('data', data => {
+    console.log('From surge process stderr: ', data);
+  });
+
   surgeProcess.on('error', e => {
     console.log('Error on surge process', e);
   });
+
   surgeProcess.on('close', () => {
-    console.log(surgeResults);
+    console.log('Surge process has finished.');
   });
 }
 
