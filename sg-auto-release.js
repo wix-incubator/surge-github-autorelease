@@ -14,13 +14,18 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   const surgeProcess = spawn('node', [`${process.cwd()}/node_modules/.bin/surge`, '--project', deployPath, '--domain', deployDomain]);
   const msg = {
     stdout: '',
-    strerr: ''
-  }
+    stderr: ''
+  };
+
   surgeProcess.stdout.on('data', data => {
+    console.log(data);
+    conosle.log(String(data));
     msg.stdout += data.toString();
   });
 
   surgeProcess.stderr.on('data', data => {
+    console.log(data);
+    conosle.log(String(data));
     msg.stderr += data.toString();
   });
 
@@ -30,8 +35,12 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 
   surgeProcess.on('close', () => {
     console.log('Surge process has finished.');
-    console.log(`STDOUT: ${msg.stdout}`);
-    console.log(`STDERR: ${msg.strerr}`);
+    if (msg.stdout) {
+      console.log(`STDOUT: ${msg.stdout}`);
+    }
+    if (msg.stderr) {
+      console.log(`STDERR: ${msg.stderr}`);
+    }
   });
 }
 
