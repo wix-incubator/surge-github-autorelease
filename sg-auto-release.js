@@ -33,17 +33,17 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 
     surgeProcess.on('error', e => {
       console.log('Error on surge process', e);
+      reject();
     });
 
     surgeProcess.on('close', () => {
       console.log('Surge process has finished.');
       if (msg.stdout) {
-        resolve();
         console.log(`Surge process stdout: ${msg.stdout}`);
+        resolve();
       }
       if (msg.stderr) {
         console.log(`Surge process stderr: ${msg.stderr}`);
-        reject();
       }
     });
   });
