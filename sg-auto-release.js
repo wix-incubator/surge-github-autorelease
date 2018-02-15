@@ -4,15 +4,20 @@ const https = require('https');
 async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath}) {
   const [repoOwner, repoName] = repo.split('/');
   const deployDomain = `https://${repoOwner}-${repoName}-pr-${pr}.surge.sh`;
-  await surgeDeploy({sourceDirectory, deployDomain, rootPath});
-  gitAddComment({repo, pr, deployDomain, githubToken});
+  const message = `View storybook at: ${deployDomain}`;
+  try {
+    await surgeDeploy({sourceDirectory, deployDomain, rootPath});
+    gitAddComment({repo, pr, githubToken, message});
+  } catch {
+    console.log('Could not deploy to surge.');
+  }
 }
 
 function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   return new Promise((resolve, reject) => {
     const deployPath = `${rootPath}/${sourceDirectory}`;
     console.log(`Deploying to Surge from: ${deployPath}...`);
-    const surgeProcess = spawn('node', [`${process.cwd()}/node_modules/.bin/surge`, '--project', deployPath, '--domain', deployDomain]);
+    const surgeProcess = spawn('npx', ['surge', '--project', deployPath, '--domain', deployDomain]);
     const msg = {
       stdout: '',
       stderr: ''
@@ -32,13 +37,11 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 
     surgeProcess.on('close', () => {
       console.log('Surge process has finished.');
-      const stdout = msg.stdout.trim();
-      const stderr = msg.stderr.trim();
-      if (stdout) {
+      if (msg.stdout) {
         resolve();
         console.log(`Surge process stdout: ${msg.stdout}`);
       }
-      if (stderr) {
+      if (msg.stderr) {
         console.log(`Surge process stderr: ${msg.stderr}`);
         reject();
       }
@@ -48,9 +51,9 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 }
 
 
-function gitAddComment({repo, pr, deployDomain, githubToken}) {
+function gitAddComment({repo, pr, githubToken, message}) {
   const githubCommentsPath = `/repos/${repo}/issues/${pr}/comments`;
-  const githubCommentsData = {body: `View storybook at: ${deployDomain}`};
+  const githubCommentsData = {body: message};
   const options = {
     hostname: 'api.github.com',
     path: githubCommentsPath,
