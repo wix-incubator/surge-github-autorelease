@@ -18,14 +18,10 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   };
 
   surgeProcess.stdout.on('data', data => {
-    console.log(data);
-    conosle.log(String(data));
     msg.stdout += data.toString();
   });
 
   surgeProcess.stderr.on('data', data => {
-    console.log(data);
-    conosle.log(String(data));
     msg.stderr += data.toString();
   });
 
@@ -36,10 +32,10 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   surgeProcess.on('close', () => {
     console.log('Surge process has finished.');
     if (msg.stdout) {
-      console.log(`STDOUT: ${msg.stdout}`);
+      console.log(`Surge process stdout: ${msg.stdout}`);
     }
     if (msg.stderr) {
-      console.log(`STDERR: ${msg.stderr}`);
+      console.log(`Surge process stderr: ${msg.stderr}`);
     }
   });
 }
