@@ -6,15 +6,17 @@ const sgAutorelease = require('./sg-auto-release');
 
 program
   .version(packageJson.version)
-  .option('-r, --repo [type]', 'Owner Name/Repo Name example: wix/wix-style-react')
-  .option('-s, --source-directory [type]', 'static files directory')
-  .option('-b, --root-path [type]', 'Root path to build agent root directory')
-  .option('-p, --pr [type]', 'Pull request number')
-  .option('-t, --github-token [type]', 'Github authentication token')
+  .option('--repo [value]', 'Owner Name/Repo Name example: wix/wix-style-react')
+  .option('--source-directory [value]', 'static files directory')
+  .option('--root-path [value]', 'Root path to build agent root directory')
+  .option('--pr [value]', 'Pull request number')
+  .option('--github-token [value]', 'Github authentication token')
+  .option('--surge-login [value]', 'Surge login')
+  .option('--surge-token [value]', 'Surge token')
   .parse(process.argv);
 
-const {repo, sourceDirectory, pr, githubToken, rootPath} = program;
-if (repo && sourceDirectory && pr && githubToken && rootPath) {
+const {repo, sourceDirectory, pr, githubToken, rootPath, surgeLogin, surgeToken} = program;
+if (repo && sourceDirectory && pr && githubToken && rootPath && surgeToken && surgeLogin) {
   console.log(`Called with repo: ${repo} sourceDirectory: ${sourceDirectory} PR number: ${pr} Root path: ${rootPath}`);
   sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath});
 } else {
