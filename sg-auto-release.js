@@ -1,23 +1,27 @@
 const {spawn} = require('child_process');
 const https = require('https');
 
-async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath}) {
+async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath, surgeLogin, surgeToken}) {
   const [repoOwner, repoName] = repo.split('/');
   const deployDomain = `https://${repoOwner}-${repoName}-pr-${pr}.surge.sh`;
   const message = `View storybook at: ${deployDomain}`;
   try {
-    await surgeDeploy({sourceDirectory, deployDomain, rootPath});
+    await surgeDeploy({sourceDirectory, deployDomain, rootPath, surgeLogin, surgeToken});
     gitAddComment({repo, pr, githubToken, message});
   } catch (e) {
     console.log('Could not deploy to surge.');
   }
 }
 
-function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
+function surgeDeploy({sourceDirectory, deployDomain, rootPath, surgeLogin, surgeToken}) {
   return new Promise((resolve, reject) => {
     const deployPath = `${rootPath}/${sourceDirectory}`;
+    const surgeCredentials = {
+      SURGE_LOGIN: surgeLogin,
+      SURGE_TOKEN: surgeToken
+    };
     console.log(`Deploying to Surge from: ${deployPath}...`);
-    const surgeProcess = spawn('npx', ['surge', '--project', deployPath, '--domain', deployDomain]);
+    const surgeProcess = spawn('npx', ['surge', '--project', deployPath, '--domain', deployDomain], {env: surgeCredentials});
     const msg = {
       stdout: '',
       stderr: ''
