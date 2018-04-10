@@ -15,12 +15,12 @@ program
   .parse(process.argv);
 
 const {repoOwner, repoName, sourceDirectory, pr, githubToken, rootPath} = program;
-if (repoOwner && repoName && sourceDirectory && pr && githubToken && rootPath) {
+if (repoOwner && repoName && sourceDirectory && pr && rootPath) {
   console.log(`Called with:
     repoOwner: ${repoOwner}, repoName: ${repoName} sourceDirectory: ${sourceDirectory}
     PR number: ${pr} Root path: ${rootPath}`);
   sgAutorelease({repo: `${repoOwner}/${repoName}`, sourceDirectory, pr, githubToken, rootPath});
 } else {
-  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -b /home/travis/build -p 1455 -t ya65s2sjhd');
-  console.log('One of the variable is missing, please try again');
+  console.log('Usage: surge-ci-github-autorelease -r wix/wix-style-react -s storybook-dist -b /home/travis/build -p 1455 -t ya65s2sjhd');
+  console.log('The variables: repoOwner, repoName, sourceDirectory and pr are required, please try again');
 }

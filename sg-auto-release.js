@@ -7,7 +7,9 @@ async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath})
   const message = `View storybook at: ${deployDomain}`;
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
-    gitAddComment({repo, pr, githubToken, message});
+    if (githubToken) {
+      gitAddComment({repo, pr, githubToken, message})
+    };
   } catch (e) {
     console.log('Could not deploy to surge.');
   }
