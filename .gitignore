@@ -3,3 +3,5 @@ package-lock.json
 node_modules
 npm-debug.log
 npm-shrinkwrap.json
+.history
+bookmarks.json

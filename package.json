@@ -1,10 +1,11 @@
 {
   "name": "surge-github-autorelease",
-  "version": "1.0.0",
+  "version": "1.0.22",
   "description": "",
   "main": "sg-auto-release.js",
   "bin": {
-    "surge-github-autorelease": "main.js"
+    "surge-github-autorelease": "main.travis.js",
+    "surge-ci-github-autorelease": "main.ci.js"
   },
   "scripts": {
     "build": ":",
