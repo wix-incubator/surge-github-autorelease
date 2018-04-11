@@ -4,8 +4,7 @@
   "description": "",
   "main": "sg-auto-release.js",
   "bin": {
-    "surge-github-autorelease": "main.travis.js",
-    "surge-ci-github-autorelease": "main.ci.js"
+    "surge-github-autorelease": "main.js"
   },
   "scripts": {
     "build": ":",
