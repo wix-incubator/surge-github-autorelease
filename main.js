@@ -18,6 +18,6 @@ if (repo && sourceDirectory && githubToken && rootPath) {
   console.log(`Called with repo: ${repo} sourceDirectory: ${sourceDirectory} PR number: ${pr} Root path: ${rootPath}`);
   sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath});
 } else {
-  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -b /home/travis/build -p 1455 -t ya65s2sjhd');
+  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -b . -p 1455 -t ya65s2sjhd');
   console.log('One of the variables is missing, please try again');
 }
