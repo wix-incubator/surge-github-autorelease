@@ -5,7 +5,7 @@ const https = require('https');
 
 async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath}) {
   const [repoOwner, repoName] = repo.split('/');
-  const deployDomain = pr ? `https://${repoOwner}-${repoName}-pr-${pr}.surge.sh` : `https://${repoOwner}-${repoName}-commit.surge.sh`;
+  const deployDomain = pr ? `https://${repoOwner}-${repoName}-pr-${pr}.surge.sh` : `https://${repoOwner}-${repoName}.surge.sh`;
   const message = `View storybook at: ${deployDomain}`;
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
