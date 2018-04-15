@@ -13,3 +13,7 @@ All you have to do is run `npx surge-github-autorelease` with the appropriate ar
 | -s                     | static files directory                          | storybook-dist|
 | -p                     | Pull request number                          |1455|
 | -t                     | Github authentication token                          |ad2jhdjhShi10axK0NENEK0bcnshd|
+
+#### Comment Example
+
+![example](https://snag.gy/G5oHd8.jpg)
