@@ -81,4 +81,4 @@ function gitAddComment({repo, pr, githubToken, message}) {
   req.end(JSON.stringify(githubCommentsData));
 }
 
-module.exports = {sgAutorelease, gitAddComment};
+module.exports = sgAutorelease;
