@@ -11,9 +11,9 @@ async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath})
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
     if (githubToken && pr) {
       gitAddComment({repo, pr, githubToken, message})
-    };
+    }
   } catch (e) {
-    console.log('Could not deploy to surge.');
+    console.log('Could not deploy to surge.', e);
   }
 }
 
