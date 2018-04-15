@@ -71,6 +71,8 @@ function gitAddComment({repo, pr, githubToken, message}) {
   const req = https.request(options, res => {
     if (res.statusCode === 200) {
       console.log('Commented to github successfully');
+    } else {
+    	console.log('Error while posting the comment', res.statusCode, res.headers)
     }
   });
   req.on('error', e => {
@@ -79,4 +81,4 @@ function gitAddComment({repo, pr, githubToken, message}) {
   req.end(JSON.stringify(githubCommentsData));
 }
 
-module.exports = sgAutorelease;
+module.exports = {sgAutorelease, gitAddComment};
