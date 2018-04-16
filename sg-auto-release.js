@@ -69,7 +69,7 @@ function gitAddComment({repo, pr, githubToken, message}) {
   };
 
   const req = https.request(options, res => {
-    if (res.statusCode === 200) {
+    if (res.statusCode === 201) {
       console.log('Commented to github successfully');
     } else {
     	console.log('Error while posting the comment', res.statusCode, res.headers)
