@@ -55,14 +55,14 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 }
 
 async function addCommentIfNotExist({repo, pr, githubToken, message}) {
-  if (await gitGetAllComments({repo, pr, githubToken, message})) {
+  if (!(await hasCommentWithMessage({repo, pr, githubToken, message}))) {
     gitAddComment({repo, pr, githubToken, message});
   } else {
     console.log('skipping adding comment - already exist');
   }
 }
 
-function gitGetAllComments({repo, pr, githubToken, message}) {
+function hasCommentWithMessage({repo, pr, githubToken, message}) {
   const githubCommentsPath = `/repos/${repo}/issues/${pr}/comments`;
   const options = {
     hostname: 'api.github.com',
@@ -87,7 +87,7 @@ function gitGetAllComments({repo, pr, githubToken, message}) {
 
       res.on('end', () => {
         const arr = JSON.parse(str);
-        resolve(arr.map(comment => comment.body).filter((comment) => comment.indexOf(message) > -1).length === 0);
+        resolve(arr.map(comment => comment.body).filter((comment) => comment.indexOf(message) > -1).length);
       });
     });
 
