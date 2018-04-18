@@ -10,7 +10,7 @@ async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath})
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
     if (githubToken && pr) {
-      gitAddComment({repo, pr, githubToken, message})
+      addCommentIfNotExist({repo, pr, githubToken, message})
     }
   } catch (e) {
     console.log('Could not deploy to surge.', e);
@@ -54,6 +54,49 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 
 }
 
+async function addCommentIfNotExist({repo, pr, githubToken, message}) {
+  if (await gitGetAllComments({repo, pr, githubToken, message})) {
+    gitAddComment({repo, pr, githubToken, message});
+  } else {
+    console.log('skipping adding comment - already exist');
+  }
+}
+
+function gitGetAllComments({repo, pr, githubToken, message}) {
+  const githubCommentsPath = `/repos/${repo}/issues/${pr}/comments`;
+  const options = {
+    hostname: 'api.github.com',
+    method: 'GET',
+    path: githubCommentsPath,
+    headers: {
+      'Authorization': `token ${githubToken}`,
+      'User-Agent': 'surge-github-autorelease'
+    }
+  };
+
+  return new Promise((resolve, reject) => {
+    const req = https.get(options, res => {
+      if (res.statusCode !== 200) {
+        console.log('Error while fetching comments', res.statusCode, res.headers);
+        reject();
+        return;
+      }
+
+      let str = '';
+      res.on('data', (chunk) => str += chunk);
+
+      res.on('end', () => {
+        const arr = JSON.parse(str);
+        resolve(arr.map(comment => comment.body).filter((comment) => comment.indexOf(message) > -1).length === 0);
+      });
+    });
+
+    req.on('error', e => {
+      console.log('Error while fetching comments', e);
+      reject();
+    });
+  });
+}
 
 function gitAddComment({repo, pr, githubToken, message}) {
   const githubCommentsPath = `/repos/${repo}/issues/${pr}/comments`;
@@ -72,7 +115,7 @@ function gitAddComment({repo, pr, githubToken, message}) {
     if (res.statusCode === 201) {
       console.log('Commented to github successfully');
     } else {
-    	console.log('Error while posting the comment', res.statusCode, res.headers)
+      console.log('Error while posting the comment', res.statusCode, res.headers)
     }
   });
   req.on('error', e => {
