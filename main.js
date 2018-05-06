@@ -11,13 +11,14 @@ program
   .option('-b, --root-path [type]', 'Root path to build agent root directory')
   .option('-p, --pr [type]', 'Pull request number (not mandatory)')
   .option('-t, --github-token [type]', 'Github authentication token')
+  .option('-d, --deploy-subdomain [subdomain]', 'Subdomain to deploy to, example: wix-wix-style-react')
   .parse(process.argv);
 
-const {repo, sourceDirectory, pr, githubToken, rootPath} = program;
-if (repo && sourceDirectory && githubToken && rootPath) {
-  console.log(`Called with repo: ${repo} sourceDirectory: ${sourceDirectory} PR number: ${pr} Root path: ${rootPath}`);
-  sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath});
+const {repo, sourceDirectory, pr, githubToken, rootPath, deploySubdomain} = program;
+if (repo && sourceDirectory && githubToken && rootPath && deploySubdomain) {
+  console.log(`Called with repo: ${repo} sourceDirectory: ${sourceDirectory} PR number: ${pr} Root path: ${rootPath} Deploy subdomain: ${deploySubdomain}`);
+  sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath, deploySubdomain});
 } else {
-  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -b . -p 1455 -t ya65s2sjhd');
+  console.log('Usage: surge-github-autorelease -r wix/wix-style-react -s storybook-dist -b . -p 1455 -t ya65s2sjhd -d wix-wix-style-react');
   console.log('One of the variables is missing, please try again');
 }
