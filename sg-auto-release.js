@@ -4,13 +4,12 @@ const {spawn} = require('child_process');
 const https = require('https');
 
 async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath, deploySubdomain}) {
-  const [repoOwner, repoName] = repo.split('/');
   const deployDomain = `https://${deploySubdomain}${pr ? `-pr-${pr}`: ''}.surge.sh`;
   const message = `View storybook at: ${deployDomain}`;
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
     if (githubToken && pr) {
-      addCommentIfNotExist({repo: `${repoOwner}/${repoName}`, pr, githubToken, message})
+      addCommentIfNotExist({repo, pr, githubToken, message})
     }
   } catch (e) {
     console.log('Could not deploy to surge.', e);
