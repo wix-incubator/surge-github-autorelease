@@ -11,7 +11,8 @@ All you have to do is to add surge-github-autorelease as a dev dependency `npm i
 
 | Argument name            | Description                             | Example            |
 | ------------------------ | ---------------------------------------- |------------------ |
-| -r                     | Owner Name/Repo Name  |wix/wix-style-react|
+| -o                     | Repo Owner Name  |wix|
+| -n                     | Repo Name  |wix-style-react|
 | -b                     | Root path to build agent root directory| . |
 | -s                     | static files directory                          | storybook-dist|
 | -p                     | Pull request number                          |1455|
