@@ -3,8 +3,8 @@
 const {spawn} = require('child_process');
 const https = require('https');
 
-async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath, deploySubdomain}) {
-  const deployDomain = `https://${deploySubdomain}${pr ? `-pr-${pr}`: ''}.surge.sh`;
+async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath, domain}) {
+  const deployDomain = `https://${domain}${pr ? `-pr-${pr}`: ''}.surge.sh`;
   const message = `View storybook at: ${deployDomain}`;
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
