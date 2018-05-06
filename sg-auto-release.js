@@ -3,14 +3,13 @@
 const {spawn} = require('child_process');
 const https = require('https');
 
-async function sgAutorelease({repo, sourceDirectory, pr, githubToken, rootPath}) {
-  const [repoOwner, repoName, ...path] = repo.split('/');
-  const deployDomain = pr ? `https://${repoOwner}-${repoName}-pr-${pr}.surge.sh` : `https://${repoOwner}-${repoName}${path.length ? '-' + path.join('-') : ''}.surge.sh`;
+async function sgAutorelease({repoOwner, repoName, sourceDirectory, pr, githubToken, rootPath, domain}) {
+  const deployDomain = `https://${domain}${pr ? `-pr-${pr}`: ''}.surge.sh`;
   const message = `View storybook at: ${deployDomain}`;
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
     if (githubToken && pr) {
-      addCommentIfNotExist({repo: `${repoOwner}/${repoName}`, pr, githubToken, message})
+      addCommentIfNotExist({repoOwner, repoName, pr, githubToken, message})
     }
   } catch (e) {
     console.log('Could not deploy to surge.', e);
@@ -54,16 +53,16 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
 
 }
 
-async function addCommentIfNotExist({repo, pr, githubToken, message}) {
-  if (!(await hasCommentWithMessage({repo, pr, githubToken, message}))) {
-    gitAddComment({repo, pr, githubToken, message});
+async function addCommentIfNotExist({repoOwner, repoName, pr, githubToken, message}) {
+  if (!(await hasCommentWithMessage({repoOwner, repoName, pr, githubToken, message}))) {
+    gitAddComment({repoOwner, repoName, pr, githubToken, message});
   } else {
     console.log('skipping adding comment - already exist');
   }
 }
 
-function hasCommentWithMessage({repo, pr, githubToken, message}) {
-  const githubCommentsPath = `/repos/${repo}/issues/${pr}/comments`;
+function hasCommentWithMessage({repoOwner, repoName, pr, githubToken, message}) {
+  const githubCommentsPath = `/repos/${repoOwner}/${repoName}/issues/${pr}/comments`;
   const options = {
     hostname: 'api.github.com',
     method: 'GET',
@@ -98,8 +97,8 @@ function hasCommentWithMessage({repo, pr, githubToken, message}) {
   });
 }
 
-function gitAddComment({repo, pr, githubToken, message}) {
-  const githubCommentsPath = `/repos/${repo}/issues/${pr}/comments`;
+function gitAddComment({repoOwner, repoName, pr, githubToken, message}) {
+  const githubCommentsPath = `/repos/${repoOwner}/${repoName}/issues/${pr}/comments`;
   const githubCommentsData = {body: message};
   const options = {
     hostname: 'api.github.com',
