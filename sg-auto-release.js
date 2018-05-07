@@ -19,6 +19,10 @@ async function sgAutorelease({repoOwner, repoName, sourceDirectory, pr, githubTo
 function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   return new Promise((resolve, reject) => {
     const deployPath = `${rootPath}/${sourceDirectory}`;
+    if (!fs.existsSync(deployPath)) {
+      return reject(new Error(`${deployPath} does not exist`))
+    }
+
     console.log(`Deploying to Surge from: ${deployPath}...`);
     const surgeProcess = spawn('npx', ['surge', '--project', deployPath, '--domain', deployDomain]);
     const msg = {
