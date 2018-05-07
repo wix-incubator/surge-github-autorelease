@@ -5,12 +5,12 @@ const https = require('https');
 const fs = require('fs');
 
 async function sgAutorelease({repoOwner, repoName, sourceDirectory, pr, githubToken, rootPath, domain}) {
-  const deployDomain = `https://${domain}${pr ? `-pr-${pr}`: ''}.surge.sh`;
+  const deployDomain = `https://${domain}${pr ? `-pr-${pr}` : ''}.surge.sh`;
   const message = `View storybook at: ${deployDomain}`;
   try {
     await surgeDeploy({sourceDirectory, deployDomain, rootPath});
     if (githubToken && pr) {
-      addCommentIfNotExist({repoOwner, repoName, pr, githubToken, message})
+      addCommentIfNotExist({repoOwner, repoName, pr, githubToken, message});
     }
   } catch (e) {
     console.log('Could not deploy to surge.', e);
@@ -21,7 +21,7 @@ function surgeDeploy({sourceDirectory, deployDomain, rootPath}) {
   return new Promise((resolve, reject) => {
     const deployPath = `${rootPath}/${sourceDirectory}`;
     if (!fs.existsSync(deployPath)) {
-      return reject(new Error(`${deployPath} does not exist`))
+      return reject(new Error(`${deployPath} does not exist`));
     }
 
     console.log(`Deploying to Surge from: ${deployPath}...`);
@@ -73,7 +73,7 @@ function hasCommentWithMessage({repoOwner, repoName, pr, githubToken, message}) 
     method: 'GET',
     path: githubCommentsPath,
     headers: {
-      'Authorization': `token ${githubToken}`,
+      Authorization: `token ${githubToken}`,
       'User-Agent': 'surge-github-autorelease'
     }
   };
@@ -87,11 +87,11 @@ function hasCommentWithMessage({repoOwner, repoName, pr, githubToken, message}) 
       }
 
       let str = '';
-      res.on('data', (chunk) => str += chunk);
+      res.on('data', chunk => str += chunk);
 
       res.on('end', () => {
         const arr = JSON.parse(str);
-        resolve(arr.map(comment => comment.body).filter((comment) => comment.indexOf(message) > -1).length);
+        resolve(arr.map(comment => comment.body).filter(comment => comment.indexOf(message) > -1).length);
       });
     });
 
@@ -110,7 +110,7 @@ function gitAddComment({repoOwner, repoName, pr, githubToken, message}) {
     path: githubCommentsPath,
     method: 'POST',
     headers: {
-      'Authorization': `token ${githubToken}`,
+      Authorization: `token ${githubToken}`,
       'User-Agent': 'surge-github-autorelease'
     }
   };
@@ -119,7 +119,7 @@ function gitAddComment({repoOwner, repoName, pr, githubToken, message}) {
     if (res.statusCode === 201) {
       console.log('Commented to github successfully');
     } else {
-      console.log('Error while posting the comment', res.statusCode, res.headers)
+      console.log('Error while posting the comment', res.statusCode, res.headers);
     }
   });
   req.on('error', e => {
