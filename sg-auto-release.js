@@ -2,6 +2,7 @@
 
 const {spawn} = require('child_process');
 const https = require('https');
+const fs = require('fs');
 
 async function sgAutorelease({repoOwner, repoName, sourceDirectory, pr, githubToken, rootPath, domain}) {
   const deployDomain = `https://${domain}${pr ? `-pr-${pr}`: ''}.surge.sh`;
