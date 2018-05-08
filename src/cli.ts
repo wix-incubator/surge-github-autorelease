@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const packageJson = require('./package.json');
-const sgAutorelease = require('./sg-auto-release');
+const packageJson = require('../../package.json');
+const sgAutorelease = require('./index');
 
 program
   .version(packageJson.version)
@@ -23,3 +23,5 @@ if (repoOwner && repoName && sourceDirectory && githubToken && rootPath && domai
   console.log('Usage: surge-github-autorelease -o wix -n wix-style-react -s storybook-dist -b . -p 1455 -t ya65s2sjhd -d wix-wix-style-react');
   console.log('One of the variables is missing, please try again');
 }
+
+export default null;
