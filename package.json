@@ -1,25 +1,44 @@
 {
   "name": "surge-github-autorelease",
-  "version": "1.0.22",
-  "description": "",
-  "main": "sg-auto-release.js",
+  "version": "1.0.23",
+  "description": "Auto version and release for surge and github comments",
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Ronen Stern",
+    "email": "ronens@wix.com"
+  },
+  "main": "dist/src/index.js",
+  "files": [
+    "dist"
+  ],
   "bin": {
-    "surge-github-autorelease": "main.js"
+    "surge-github-autorelease": "dist/src/cli.js"
+  },
+  "publishConfig": {
+    "registry": "http://npm.dev.wixpress.com/"
   },
   "scripts": {
-    "build": ":",
-    "test": ":",
-    "release": "wnpm-release",
-    "postpublish": "rm -f npm-shrinkwrap.json"
+    "start": "yoshi start",
+    "precommit": "yoshi lint",
+    "pretest": "yoshi build",
+    "test": "yoshi test",
+    "posttest": "yoshi lint",
+    "release": "yoshi release"
   },
   "devDependencies": {
-    "wnpm-ci": "latest"
+    "chai": "~4.1.0",
+    "husky": "~0.14.0",
+    "yoshi": "^2.1.2",
+    "typescript": "~2.4.0",
+    "@types/node": "^8.0.0",
+    "@types/chai": "~4.0.0",
+    "@types/mocha": "~2.2.0"
   },
   "dependencies": {
     "commander": "^2.14.1",
     "surge": "^0.20.0"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+  "yoshi": {
+    "hmr": "auto"
   }
 }
