@@ -9,15 +9,21 @@
   "scripts": {
     "build": ":",
     "test": ":",
+    "posttest": "eslint ./*.js",
     "release": "wnpm-release",
     "postpublish": "rm -f npm-shrinkwrap.json"
   },
   "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-wix": "^1.1.18",
     "wnpm-ci": "latest"
   },
   "dependencies": {
     "commander": "^2.14.1",
     "surge": "^0.20.0"
+  },
+  "eslintConfig": {
+    "extends": "wix"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
