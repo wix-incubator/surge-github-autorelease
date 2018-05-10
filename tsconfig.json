@@ -10,7 +10,8 @@
     "target": "es2017"
   },
   "include": [
-    "./test/**/*.ts"
+    "./test/**/*.ts",
+    "./src/**/*.ts"
   ],
   "files": [
     "./src/index.ts",
