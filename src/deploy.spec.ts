@@ -1,11 +1,8 @@
 import 'mocha';
-import {expect, use} from 'chai';
+import {expect} from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import deploy from './deploy';
 import * as Chance from 'chance';
-
-use(sinonChai);
 
 describe('deploy', () => {
   let rootPath;

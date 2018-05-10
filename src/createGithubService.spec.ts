@@ -1,11 +1,9 @@
 import 'mocha';
-import {expect, use} from 'chai';
+import {expect} from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as Chance from 'chance';
 import createGithubService from './createGithubService';
 
-use(sinonChai);
 describe('createGithubService', () => {
   const githubToken = Chance().word();
   const owner = Chance().word();
