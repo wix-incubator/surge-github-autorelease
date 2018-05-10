@@ -23,6 +23,13 @@
                 <role>owner</role>
             </roles>
         </developer>
+        <developer>
+            <name>Shlomi Toussia-Cohen</name>
+            <email>shlomitc@wix.com</email>
+            <roles>
+                <role>owner</role>
+            </roles>
+        </developer>
     </developers>
     <parent>
         <groupId>com.wixpress.common</groupId>
