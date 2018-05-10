@@ -16,21 +16,26 @@ describe('deploy', () => {
   let fileService;
   let githubService;
   let pr;
+  let sha;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     rootPath = Chance().word();
     sourceDirectory = Chance().word();
     domain = Chance().word();
+    sha = Chance().word();
+    pr = Chance().natural({min: 1, max: 20});
+
     surgeService = sandbox.spy();
     fileService = {
       exists: sandbox.stub().returns(true)
     };
     githubService = {
       createPrComment: sandbox.spy(),
-      getPrComments: sandbox.stub().returns([])
+      getPrComments: sandbox.stub().returns([]),
+      updateCommitStatus: sandbox.spy(),
+      getPrSha: sandbox.stub().returns(sha),
     };
-    pr = Chance().natural({min: 1, max: 20});
   });
 
   afterEach(() => {
@@ -45,6 +50,18 @@ describe('deploy', () => {
     surgeService,
     fileService,
     githubService,
+  });
+
+  it('should update the status as pending', async () => {
+    await callDeploy();
+
+    expect(githubService.updateCommitStatus)
+      .to.be.calledWithExactly({
+        sha,
+        state: 'pending',
+        description: 'Deploying to surge',
+        context: domain
+      });
   });
 
   it('should call surge with the correct static folder and domain', async () => {
@@ -68,6 +85,38 @@ describe('deploy', () => {
       );
   });
 
+  it('should update the status as success', async () => {
+    await callDeploy();
+
+    expect(githubService.updateCommitStatus).to.be.calledTwice;
+    expect(githubService.updateCommitStatus.secondCall)
+      .and.to.be.calledWithExactly({
+        sha,
+        state: 'success',
+        description: 'Deployed to surge.sh',
+        target_url: `https://${domain}-pr-${pr}.surge.sh/`,
+        context: domain
+      });
+  });
+
+  it('should update the status as error', async () => {
+    surgeService = sinon.stub().throws();
+    try {
+      await callDeploy();
+    } catch (e) {
+      expect(e).to.be.an('Error');
+    }
+
+    expect(githubService.updateCommitStatus).to.be.calledTwice;
+    expect(githubService.updateCommitStatus.secondCall)
+      .and.to.be.calledWithExactly({
+        sha,
+        state: 'error',
+        description: 'Deployment failed',
+        context: domain
+      });
+  });
+
   it('should fail if the folder does not exist', async () => {
     fileService = {
       exists: sandbox.stub().returns(false)
@@ -83,27 +132,6 @@ describe('deploy', () => {
     expect(error).to.be.an('Error');
   });
 
-  it('should add a github comment for the correct pr', async () => {
-    await callDeploy();
-
-    expect(githubService.createPrComment).to.be.calledOnce
-      .and.to.be.calledWithExactly(pr,
-        `View storybook at: https://${domain}-pr-${pr}.surge.sh/`
-      );
-  });
-
-  it('should not add a github comment if the comment already exists', async () => {
-    githubService.getPrComments = sandbox.stub()
-      .withArgs(pr)
-      .returns([{
-        body: `View storybook at: https://${domain}-pr-${pr}.surge.sh/`
-      }]);
-
-    await callDeploy();
-
-    expect(githubService.createPrComment).to.not.be.called;
-  });
-
   it('should fail gracefully if github service is null', async () => {
     githubService = null;
     await callDeploy();
@@ -116,12 +144,5 @@ describe('deploy', () => {
     }
 
     expect(error).to.be.undefined;
- });
-
- it('should not create a pr if pr is not defined', async () => {
-   pr = null;
-   await callDeploy();
-
-   expect(githubService.createPrComment).to.not.be.called;
  });
 });

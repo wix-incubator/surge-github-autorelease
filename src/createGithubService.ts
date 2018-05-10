@@ -5,7 +5,8 @@ export default function createGithubService(api, {token, owner, repo}) {
   });
 
   return {
-    createPrComment: (number, body) => api.issues.createComment({owner, repo, number, body}),
-    getPrComments: async number => (await api.issues.getComments({owner, repo, number})).data
+    updateCommitStatus: async ({sha, state, target_url, description, context}) =>
+      api.repos.createStatus({owner, repo, sha, state, target_url, description, context}),
+    getPrSha: async number => (await api.pullRequests.get({owner, repo, number})).data.head.sha,
   };
 }

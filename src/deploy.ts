@@ -1,24 +1,35 @@
 import {resolve} from 'path';
 
 export default async function deploy({rootPath, sourceDirectory, domain, pr, surgeService, fileService, githubService}) {
-  const projectPath = `${rootPath}/${sourceDirectory}`;
-  if (!fileService.exists(projectPath)) {
-    throw(new Error(`${projectPath} does not exist`));
-  }
-
   const surgeDomain = `https://${domain}${pr ? `-pr-${pr}` : ''}.surge.sh/`;
-  await surgeService(['publish', '--project', projectPath, '--domain', surgeDomain]);
-  if (githubService && pr) {
-    await updatePr({githubService, pr, surgeDomain});
+
+  const updateStatus = await createStatusUpdater({githubService, pr, domain});
+  updateStatus('pending', 'Deploying to surge');
+
+  try {
+    const projectPath = `${rootPath}/${sourceDirectory}`;
+    if (!fileService.exists(projectPath)) {
+      throw(new Error(`${projectPath} does not exist`));
+    }
+    await surgeService(['publish', '--project', projectPath, '--domain', surgeDomain]);
+    updateStatus('success', 'Deployed to surge.sh', surgeDomain);
+  } catch (e) {
+    updateStatus('error', 'Deployment failed');
+    throw e;
   }
 }
 
-async function updatePr({githubService, pr, surgeDomain}) {
-  const message = `View storybook at: ${surgeDomain}`;
-
-  const comments = await githubService.getPrComments(pr);
-  const commentWithMessage = comment => comment.body.includes(message);
-  if (!comments.find(commentWithMessage)) {
-    githubService.createPrComment(pr, message);
+async function createStatusUpdater({githubService, pr, domain}) {
+  if (!githubService || !pr) {
+    return (state, description = null, target_url = null) => { return; };
   }
+
+  const sha = await githubService.getPrSha(pr);
+  return (state, description = null, target_url = null) => githubService.updateCommitStatus({
+    sha,
+    state,
+    context: domain,
+    ...(description ? {description} : {}),
+    ...(target_url ? {target_url} : {})
+  });
 }

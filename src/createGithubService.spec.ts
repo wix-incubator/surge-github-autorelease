@@ -10,13 +10,14 @@ describe('createGithubService', () => {
   const githubToken = Chance().word();
   const owner = Chance().word();
   const repo = Chance().word();
-  const pr = Chance().word();
   const sandbox = sinon.createSandbox();
   const githubApi  = {
     authenticate: sandbox.spy(),
-    issues: {
-      createComment: sandbox.spy(),
-      getComments: sandbox.spy()
+    repos: {
+      createStatus: sandbox.spy()
+    },
+    pullRequests: {
+      get: sandbox.spy()
     }
   };
 
@@ -30,23 +31,27 @@ describe('createGithubService', () => {
     });
   });
 
-  it('should call createComment', () => {
+  it('should call createStatus', () => {
     const githubService = createGithubService(githubApi, {token: githubToken, owner, repo});
-    const body = Chance().sentence();
+    const sha = Chance().word();
+    const state = Chance().word();
+    const target_url = Chance().word();
+    const description = Chance().word();
+    const context = Chance().word();
 
-    githubService.createPrComment(pr, body);
+    githubService.updateCommitStatus({sha, state, target_url, description, context});
 
-    expect(githubApi.issues.createComment).to.be.calledOnce
-      .and.to.be.calledWithExactly({owner, repo, number: pr, body});
+    expect(githubApi.repos.createStatus).to.be.calledOnce
+      .and.to.be.calledWithExactly({owner, repo, sha, state, target_url, description, context});
   });
 
-  it('should call getComments', () => {
+  it('should call createStatus', () => {
     const githubService = createGithubService(githubApi, {token: githubToken, owner, repo});
-    const body = Chance().sentence();
+    const number = Chance().natural();
 
-    githubService.getPrComments(pr);
+    githubService.getPrSha(number);
 
-    expect(githubApi.issues.getComments).to.be.calledOnce
-      .and.to.be.calledWithExactly({owner, repo, number: pr});
+    expect(githubApi.pullRequests.get).to.be.calledOnce
+      .and.to.be.calledWithExactly({owner, repo, number});
   });
 });
