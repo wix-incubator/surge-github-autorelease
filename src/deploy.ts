@@ -20,7 +20,7 @@ export default async function deploy({rootPath, sourceDirectory, domain, pr, sur
 }
 
 async function createStatusUpdater({githubService, pr, domain}) {
-  if (!githubService || !pr) {
+  if (!githubService.isInitialized() || !pr) {
     return (state, description = null, target_url = null) => { return; };
   }
 

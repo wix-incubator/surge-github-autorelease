@@ -5,14 +5,11 @@ const deploy = require('./deploy').default;
 const exec = require('child_process').exec;
 
 async function sgAutorelease({rootPath, sourceDirectory, domain, repoOwner, repoName, githubToken, pr}) {
-  const githubServiceParams = {
+  const githubService = createGithubService(octokit, {
     owner: repoOwner,
     repo: repoName,
     token: githubToken
   };
-  const valueExists = (value): boolean => !!value;
-  const githubServiceParamsAreValid = Object.values(githubServiceParams).every(valueExists);
-  const githubService = githubServiceParamsAreValid && createGithubService(octokit, githubServiceParams);
   const fileService = {
     exists: path => fs.existsSync(path)
   };

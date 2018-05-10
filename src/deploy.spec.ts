@@ -3,6 +3,7 @@ import {expect} from 'chai';
 import * as sinon from 'sinon';
 import deploy from './deploy';
 import * as Chance from 'chance';
+import {IGithubService} from './createGithubService';
 
 describe('deploy', () => {
   let rootPath;
@@ -11,7 +12,7 @@ describe('deploy', () => {
   let surgeService;
   let sandbox;
   let fileService;
-  let githubService;
+  let githubService: IGithubService;
   let pr;
   let sha;
 
@@ -22,14 +23,12 @@ describe('deploy', () => {
     domain = Chance().word();
     sha = Chance().word();
     pr = Chance().natural({min: 1, max: 20});
-
     surgeService = sandbox.spy();
     fileService = {
       exists: sandbox.stub().returns(true)
     };
     githubService = {
-      createPrComment: sandbox.spy(),
-      getPrComments: sandbox.stub().returns([]),
+      isInitialized: sandbox.stub().returns(Chance().bool()),
       updateCommitStatus: sandbox.spy(),
       getPrSha: sandbox.stub().returns(sha),
     };
@@ -49,7 +48,12 @@ describe('deploy', () => {
     githubService,
   });
 
+  const givenInitializedGithubService = isInitialized => {
+    githubService.isInitialized =  sandbox.stub().returns(isInitialized);
+  };
+
   it('should update the status as pending', async () => {
+    givenInitializedGithubService(true);
     await callDeploy();
 
     expect(githubService.updateCommitStatus)
@@ -83,10 +87,11 @@ describe('deploy', () => {
   });
 
   it('should update the status as success', async () => {
+    givenInitializedGithubService(true);
     await callDeploy();
 
     expect(githubService.updateCommitStatus).to.be.calledTwice;
-    expect(githubService.updateCommitStatus.secondCall)
+    expect((githubService.updateCommitStatus as any).secondCall)
       .and.to.be.calledWithExactly({
         sha,
         state: 'success',
@@ -97,6 +102,7 @@ describe('deploy', () => {
   });
 
   it('should update the status as error', async () => {
+    givenInitializedGithubService(true);
     surgeService = sinon.stub().throws();
     try {
       await callDeploy();
@@ -105,7 +111,7 @@ describe('deploy', () => {
     }
 
     expect(githubService.updateCommitStatus).to.be.calledTwice;
-    expect(githubService.updateCommitStatus.secondCall)
+    expect((githubService.updateCommitStatus as any).secondCall)
       .and.to.be.calledWithExactly({
         sha,
         state: 'error',
@@ -129,17 +135,9 @@ describe('deploy', () => {
     expect(error).to.be.an('Error');
   });
 
-  it('should fail gracefully if github service is null', async () => {
-    githubService = null;
+  it('should not update the commit status', async () => {
+    givenInitializedGithubService(false);
     await callDeploy();
-
-    let error;
-    try {
-      await callDeploy();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).to.be.undefined;
+    expect(githubService.updateCommitStatus).to.not.be.called;
  });
 });
