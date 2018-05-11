@@ -22,7 +22,7 @@ async function sgAutorelease({rootPath, sourceDirectory, domain, repoOwner, repo
     owner: repoOwner,
     repo: repoName,
     token: githubToken
-  };
+  });
 
   await deploy({rootPath, sourceDirectory, domain, pr, surgeService, fileService, githubService});
 }
