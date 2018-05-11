@@ -4,9 +4,9 @@ const isValidParams = githubServiceParams => Object.values(githubServiceParams).
 export type UpdateStatusParams = {
   sha: string,
   state: string,
-  target_url: string,
-  description: string,
-  context: string
+  target_url?: string,
+  description?: string,
+  context?: string
 };
 
 export interface IGithubService {
@@ -15,7 +15,7 @@ export interface IGithubService {
   getPrSha: (number: number) => Promise<string>;
 }
 
-export class GithubService {
+export class GithubService implements IGithubService {
   private initialized: boolean = false;
 
   constructor(private api, private token, private owner, private repo) {
@@ -32,7 +32,7 @@ export class GithubService {
     return this.initialized;
   }
 
-  updateCommitStatus({sha, state, target_url, description, context}) {
+  updateCommitStatus({sha, state, target_url, description, context}: UpdateStatusParams) {
     const {api, repo, owner} = this;
     return api.repos.createStatus({owner, repo, sha, state, target_url, description, context});
   }
