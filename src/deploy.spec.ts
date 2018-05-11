@@ -49,7 +49,7 @@ describe('deploy', () => {
   });
 
   const givenInitializedGithubService = isInitialized => {
-    githubService.isInitialized =  sandbox.stub().returns(isInitialized);
+    githubService.isInitialized = sandbox.stub().returns(isInitialized);
   };
 
   it('should update the status as pending', async () => {
@@ -70,9 +70,12 @@ describe('deploy', () => {
 
     expect(surgeService)
       .to.be.calledOnce
-      .and.to.be.calledWithExactly(
-        ['publish', '--project', `${rootPath}/${sourceDirectory}`, '--domain', `https://${domain}-pr-${pr}.surge.sh/`]
-      );
+      .and.to.be.calledWithExactly([
+        'publish',
+        '--project',
+        `${rootPath}/${sourceDirectory}`,
+        '--domain', `https://${domain}-pr-${pr}.surge.sh/`
+      ]);
   });
 
   it('should call surge with the correct static folder and domain with no pr', async () => {
@@ -81,9 +84,13 @@ describe('deploy', () => {
 
     expect(surgeService)
       .to.be.calledOnce
-      .and.to.be.calledWithExactly(
-        ['publish', '--project', `${rootPath}/${sourceDirectory}`, '--domain', `https://${domain}.surge.sh/`]
-      );
+      .and.to.be.calledWithExactly([
+        'publish',
+        '--project',
+        `${rootPath}/${sourceDirectory}`,
+        '--domain',
+        `https://${domain}.surge.sh/`
+      ]);
   });
 
   it('should update the status as success', async () => {
@@ -92,7 +99,7 @@ describe('deploy', () => {
 
     expect(githubService.updateCommitStatus).to.be.calledTwice;
     expect((githubService.updateCommitStatus as any).secondCall)
-      .and.to.be.calledWithExactly({
+      .to.be.calledWithExactly({
         sha,
         state: 'success',
         description: 'Deployed to surge.sh',
@@ -112,7 +119,7 @@ describe('deploy', () => {
 
     expect(githubService.updateCommitStatus).to.be.calledTwice;
     expect((githubService.updateCommitStatus as any).secondCall)
-      .and.to.be.calledWithExactly({
+      .to.be.calledWithExactly({
         sha,
         state: 'error',
         description: 'Deployment failed',
