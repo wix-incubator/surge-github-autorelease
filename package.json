@@ -15,7 +15,7 @@
     "surge-github-autorelease": "dist/src/cli.js"
   },
   "publishConfig": {
-    "registry": "http://npm.dev.wixpress.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "start": "yoshi start",
