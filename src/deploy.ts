@@ -1,5 +1,3 @@
-import {resolve} from 'path';
-
 export default async function deploy({rootPath, sourceDirectory, domain, pr, surgeService, fileService, githubService}) {
   const surgeDomain = `https://${domain}${pr ? `-pr-${pr}` : ''}.surge.sh/`;
 
