@@ -49,7 +49,7 @@ describe('createGithubService', () => {
     });
   });
 
-  it('should call createStatus', () => {
+  it('should call repos.createStatus', () => {
     const githubService = createGithubService(githubApi, {token: githubToken, owner, repo});
     const sha = Chance().word();
     const state = Chance().word();
@@ -63,7 +63,7 @@ describe('createGithubService', () => {
       .and.to.be.calledWithExactly({owner, repo, sha, state, target_url, description, context});
   });
 
-  it('should call createStatus', () => {
+  it('should call pullRequests.get', () => {
     const githubService = createGithubService(githubApi, {token: githubToken, owner, repo});
     const number = Chance().natural();
 
