@@ -1,25 +1,50 @@
 {
   "name": "surge-github-autorelease",
-  "version": "1.0.22",
-  "description": "",
-  "main": "sg-auto-release.js",
+  "version": "1.0.23",
+  "description": "Auto version and release for surge and github comments",
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Ronen Stern",
+    "email": "ronens@wix.com"
+  },
+  "main": "dist/src/index.js",
+  "files": [
+    "dist"
+  ],
   "bin": {
-    "surge-github-autorelease": "main.js"
-  },
-  "scripts": {
-    "build": ":",
-    "test": ":",
-    "release": "wnpm-release",
-    "postpublish": "rm -f npm-shrinkwrap.json"
-  },
-  "devDependencies": {
-    "wnpm-ci": "latest"
-  },
-  "dependencies": {
-    "commander": "^2.14.1",
-    "surge": "^0.20.0"
+    "surge-github-autorelease": "dist/src/cli.js"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "start": "yoshi start",
+    "precommit": "yoshi lint",
+    "pretest": "yoshi build",
+    "test": "yoshi test",
+    "posttest": "yoshi lint",
+    "release": "yoshi release"
+  },
+  "devDependencies": {
+    "@types/chai": "~4.0.0",
+    "@types/mocha": "~2.2.0",
+    "@types/node": "^8.0.0",
+    "@types/sinon": "^4.3.1",
+    "@types/sinon-chai": "^2.7.30",
+    "chai": "~4.1.0",
+    "chance": "^1.0.16",
+    "husky": "~0.14.0",
+    "sinon": "^5.0.7",
+    "sinon-chai": "^3.0.0",
+    "typescript": "~2.4.0",
+    "yoshi": "^2.1.2"
+  },
+  "dependencies": {
+    "@octokit/rest": "^15.4.0",
+    "commander": "^2.14.1",
+    "surge": "^0.20.0"
+  },
+  "yoshi": {
+    "hmr": "auto"
   }
 }
