@@ -10,7 +10,7 @@ const fileService = {
 const surgeService = command => new Promise((resolve, reject) => {
   exec(`npx surge ${command.join(' ')}`, {timeout: 10000}, (error, stdout, stderr) => {
     if (error && error.code !== 0) {
-      reject(new Error(`Surge error: ${error.code} ${stderr}`));
+      reject(new Error(`Surge error: ${error} ${error.code} ${stderr}`));
     } else {
       resolve(stdout);
     }
