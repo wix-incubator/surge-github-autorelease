@@ -7,6 +7,7 @@ const exec = require('child_process').exec;
 const fileService = {
   exists: path => fs.existsSync(path),
 };
+
 const surgeService = command =>
   new Promise((resolve, reject) => {
     exec(
@@ -14,7 +15,11 @@ const surgeService = command =>
       { timeout: 10000 },
       (error, stdout, stderr) => {
         if (error && error.code !== 0) {
-          reject(new Error(`Surge error: ${error} ${error.code} ${stderr}`));
+          reject(
+            new Error(
+              `Surge error: ${error} ${error.code} ${stderr} ${stdout}`,
+            ),
+          );
         } else {
           resolve(stdout);
         }
